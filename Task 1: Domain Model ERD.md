@@ -11,26 +11,4 @@ The diagram should capture the information represented in the data file that was
 Study the elements in the JSON data file and create elements, attributes, and relationships (with cardinalities) that describe the data.
 
 # Tentative Solution
-[Link](https://mermaid.live/edit#pako:eNqtU01rxCAQ_SviefcP5NpeSnsoLb0tLBOdTQQ_Fh0pIcl_r4npbtNYyKEeFN88Zp5vnJ4LJ5FXHP2jgsaDOVmW1lMIEdkwHI-uZw_OGLTEKnbiLYQTL3BeoEY9MwiaBiX7VNRumcPAPgL6mSg8AiVm3RUzviEIUs6Wy_b5Mq1AXtmGKclenzcoKdK4QWsnuzsokwxSBtmi6AxUCMar_DsotAu_YkupQIlzR200dXp_PjI85iPvszsF37O0mwk_aSujQMo1aa9R2jXKbu3rrlhQ-a1sb_L_8HslIH-3veUtmO0fkBiEV9fJuU1MOO1K3blZvbeycJaSUTvePvIDN-gNKJnGcc6fZqnFpJxPjZV4gahp6u1EhUjuvbOCV-QjHrh3sWl5dQEd0i17t0x0poxfEQcz_w)
-
-### Entities:
-- Issue: The central entity representing GitHub issues
-- User: Represents GitHub users who interact with issues
-- Comment: Represents comments on issues
-- Label: Represents labels that can be applied to issues
-- Reaction: Represents emoji reactions to issues or comments
-
-### Relationships:
-- An Issue is created by one User (1:1)
-- An Issue can have many Comments (1:many)
-- An Issue can have many Labels (1:many)
-- An Issue can have many Reactions (1:many)
-- A User can create many Comments (1:many)
-- A User can add many Reactions (1:many)
-
-### Attributes:
-- Issue: id, title, body, created_at, updated_at, closed_at, state, number
-- User: id, login, type
-- Comment: id, body, created_at, updated_at
-- Label: id, name, description, color
-- Reaction: id, content, created_at
+https://mermaid.live/edit#pako:eNp9k89uwyAMxl8FcW5fINdth0m7TbtVqmhxEyT-VGDaRUnefSakRSnRuPH5h_0Zw8DPTgJvOPh3JVovzMEyWp8hRGCT2-_Hkf0E8KxhB372IBAkO_UH_sq5oXAiBNVaAtGtwXGcwY8bWJzJToRN4kucQM8EiralTHeFXSIzO1eqkomInfOhYDmUOOrizRnzII3oWW7mUX2FluoJVPbm9A1K2ux0yJu0FB210ZzIVBEDemVbhgo11Cr8YhElGUFlYPEkj0nYCMer3AgvKQNuqemcVhaO0esq-NSm1cUONUiyFQZe6HxpNQ5JP2J_rf3kGW30ls-Uzp5FHnMb_rnEJ5wnV6Mr83zHDXgjlKSHP7P0zDoggqeZS7iIqDHNeyKUHLvv3p55gz7CjnsX2443F6ED7fJIlr-zqNMfkVMODg
