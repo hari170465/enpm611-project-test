@@ -1,3 +1,6 @@
+# Running
+- On Fedora GNOME with wayland, you've to install PyQT first `pip install PyQT5`. You may also need to install `python3.13-devel`
+
 # ENPM611 Project Application Template
 
 This is the template for the ENPM611 class project. Use this template in conjunction with the provided data to implement an application that analyzes GitHub issues for the [poetry](https://github.com/python-poetry/poetry/issues) Open Source project and generates interesting insights.
