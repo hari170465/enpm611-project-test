@@ -1,52 +1,76 @@
-# Running
-- On Fedora GNOME with wayland, you've to install PyQT first `pip install PyQT5`. You may also need to install `python3.13-devel`
+## About Project
+This is my submission for ENPM611 project.
 
-# ENPM611 Project Application Template
+This code implements four different analyses to analyze GitHub issues from the `python-poetry/poetry` repository to generate insights into **issue activity**, **contributor engagement**, **issue reopening patterns**, and **contributor interactions**.
 
-This is the template for the ENPM611 class project. Use this template in conjunction with the provided data to implement an application that analyzes GitHub issues for the [poetry](https://github.com/python-poetry/poetry/issues) Open Source project and generates interesting insights.
+### Analysis 1: Most Active Issue Labels
+Identifies the labels associated with the most active discussions by analyzing the number of comments on issues tagged with each label.
 
-This application template implements some of the basic functions:
+This helps to understand which types of issues generate the most engagement among contributors.
 
-- `data_loader.py`: Utility to load the issues from the provided data file and returns the issues in a runtime data structure (e.g., objects)
-- `model.py`: Implements the data model into which the data file is loaded. The data can then be accessed by accessing the fields of objects.
-- `config.py`: Supports configuring the application via the `config.json` file. You can add other configuration paramters to the `config.json` file.
-- `run.py`: This is the module that will be invoked to run your application. Based on the `--feature` command line parameter, one of the three analyses you implemented will be run. You need to extend this module to call other analyses.
+### Analysis 2: Contributor Activity Over Time
+Analyzes contributor activity by examining the number of events (comments or issue closures) each contributor is involved in overtime.
 
-With the utility functions provided, you should focus on implementing creative analyses that generate intersting and insightful insights.
+This provides insights into the most active contributors and when they were so.
+### Analysis 3: Counting Reopened Issues per Label
+Counts the number of times issues are reopened per label.
 
-In addition to the utility functions, an example analysis has also been implemented in `example_analysis.py`. It illustrates how to use the provided utility functions and how to produce output.
+This let us understand identify what kind of issues are usually the most problematic, require additional attention or indicate complex problem areas.
 
-## Setup
+### (Bonus) Analysis 4: Network Analysis of Contributor Interactions
+Constructs a network graph of contributors based on their interactions with issues.
 
-To get started, your team should create a fork of this repository. Then, every team member should clone your repository to their local computer. 
+Nodes represent contributors, and edges represent interactions between them.
 
+This analysis shows collaboration patterns and key contributors. And still has space for improvements to build upon.
 
-### Install dependencies
+## How to Run the Program
 
-In the root directory of the application, create a virtual environment, activate that environment, and install the dependencies like so:
+### Prerequisites
 
-```
+- Python 3.x installed on your system.
+- Required Python packages installed:
+    - `pandas`
+    - `matplotlib`
+    - `networkx`
+    - `python-dateutil`
+    - `scipy`
+
+Install the required packages using:
+```bash  
 pip install -r requirements.txt
+```  
+
+### Data File Configuration
+
+Ensure that `poetry_issues.json` is available and that the `config.json` file is updated with the correct path to it,
+
+### Running Analyses
+
+The program is executed via the command line using `run.py`.   
+Specify which analysis to run using the `--feature` flag followed by the feature number (1 to 4).   
+Optional filters for user and label can be provided using the `--user` and `--label` flags.
+
+```bash  
+python run.py --feature <feature_number> [--user <username>] [--label <label_name>]
+```  
+
+#### Examples
+
+1. **Run Analysis 1 (Most Active Issue Labels)**
+```bash  
+python run.py --feature 1 --label Bug
+```  
+1. **Run Analysis 2 (Contributor Activity Over Time)**
+
+```bash  
+python run.py --feature 2 --user rth
+```  
+1. **Run Analysis 3 (Counting Reopened Issues per Label)**
+```bash  
+python run.py --feature 3
+```  
+1. **Run Analysis 4 (Network Analysis of Contributor Interactions)**
+```bash  
+python run.py -f 4 --label Bug --user cmarmo  
 ```
-
-### Download and configure the data file
-
-Download the data file (in `json` format) from the project assignment in Canvas and update the `config.json` with the path to the file. Note, you can also specify an environment variable by the same name as the config setting (`ENPM611_PROJECT_DATA_PATH`) to avoid committing your personal path to the repository.
-
-
-### Run an analysis
-
-With everything set up, you should be able to run the existing example analysis:
-
-```
-python run.py --feature 0
-```
-
-That will output basic information about the issues to the command line.
-
-
-## VSCode run configuration
-
-To make the application easier to debug, runtime configurations are provided to run each of the analyses you are implementing. When you click on the run button in the left-hand side toolbar, you can select to run one of the three analyses or run the file you are currently viewing. That makes debugging a little easier. This run configuration is specified in the `.vscode/launch.json` if you want to modify it.
-
-The `.vscode/settings.json` also customizes the VSCode user interface sligthly to make navigation and debugging easier. But that is a matter of preference and can be turned off by removing the appropriate settings.

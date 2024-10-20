@@ -1,10 +1,13 @@
 """Starting point of the application."""
 
 import argparse
+import sys
 
 import config
 from active_labels_analysis import ActiveLabelsAnalysis
-from example_analysis import ExampleAnalysis
+from contributor_activity_analysis import ContributorActivityAnalysis
+from contributors_interactions_analysis import ContributorsInteractionsAnalysis
+from reopened_issue_analysis import ReopenedIssueAnalysis
 
 
 def parse_args():
@@ -25,18 +28,21 @@ def parse_args():
     
     return ap.parse_args()
 
+def unrecognized_feature():
+    print(f'Error: Need to pick a feature between 1 and {len(FEATURES)}')
+    sys.exit(1)
+
+
+FEATURES = {
+    0: lambda: print("This code doesn't implement the Example Analysis"),
+    1: lambda: ActiveLabelsAnalysis().run(),
+    2: lambda: ContributorActivityAnalysis().run(),
+    3: lambda: ReopenedIssueAnalysis().run(),
+    4: lambda: ContributorsInteractionsAnalysis().run(),
+}
+
 
 if __name__ == "__main__":
     args = parse_args()
-    config.overwrite_from_args(args)    # Other parts access args through `config`
-
-    if args.feature == 0:
-        ExampleAnalysis().run()
-    elif args.feature == 1:
-        ActiveLabelsAnalysis().run()
-    elif args.feature == 2:
-        raise RuntimeError("Feature not implemented yet")
-    elif args.feature == 3:
-        raise RuntimeError("Feature not implemented yet")
-    else:
-        print('Need to specify which feature to run with --feature flag.')
+    config.overwrite_from_args(args)
+    FEATURES.get(args.feature, unrecognized_feature)()

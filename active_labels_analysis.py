@@ -10,7 +10,7 @@ from model import Issue
 
 class ActiveLabelsAnalysis:
     """
-     Identify labels associated with the most active discussions.
+     Identifies labels associated with the most active discussions.
     """
 
     def __init__(self):
@@ -22,12 +22,8 @@ class ActiveLabelsAnalysis:
             self.print_occurrences(issues)
 
         df = self.create_dataframe(issues)
-        if self.LABEL:
-            # filter by label if label arg got passed
-            df = df[df['label'] == self.LABEL]
-
-        label_activity = self.get_label_activity(df)
-        self.visualize_results(label_activity)
+        aggregated = self.aggregate(df)
+        self.visualize_results(aggregated)
 
     def print_occurrences(self, issues):
         # How many self.LABEL instances exist
@@ -39,12 +35,15 @@ class ActiveLabelsAnalysis:
     def create_dataframe(self, issues) -> pd.DataFrame:
         data = []
         for issue in issues:
-            num_comments = sum(1 for event in issue.events if event.event_type == 'commented')
+            num_comments = sum(1 for event in issue.events if event and event.event_type == 'commented')
             for label in issue.labels:
                 data.append({'label': label, 'num_comments': num_comments})
-        return pd.DataFrame(data)
+        df = pd.DataFrame(data)
+        if self.LABEL:
+            df = df[df['label'] == self.LABEL]             # filter by label if label arg got passed
+        return df
 
-    def get_label_activity(self, df):
+    def aggregate(self, df):
         return df.groupby('label')['num_comments'].sum().sort_values(ascending=False)
 
     def visualize_results(self, label_activity):
