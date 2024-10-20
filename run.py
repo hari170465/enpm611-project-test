@@ -4,10 +4,10 @@ import argparse
 import sys
 
 import config
-from active_labels_analysis import ActiveLabelsAnalysis
-from contributor_activity_analysis import ContributorActivityAnalysis
-from contributors_interactions_analysis import ContributorsInteractionsAnalysis
-from reopened_issue_analysis import ReopenedIssueAnalysis
+from analyses.active_labels_analysis import ActiveLabelsAnalysis
+from analyses.contributor_activity_analysis import ContributorActivityAnalysis
+from analyses.contributors_interactions_analysis import ContributorsInteractionsAnalysis
+from analyses.reopened_issue_analysis import ReopenedIssueAnalysis
 
 
 def parse_args():

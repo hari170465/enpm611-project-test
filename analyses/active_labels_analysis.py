@@ -5,7 +5,7 @@ import pandas as pd
 
 import config
 from data_loader import DataLoader
-from model import Issue
+from models.Issue import Issue
 
 
 class ActiveLabelsAnalysis:
@@ -19,20 +19,20 @@ class ActiveLabelsAnalysis:
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
         if self.LABEL:
-            self.print_occurrences(issues)
+            self.__print_occurrences(issues)
 
-        df = self.create_dataframe(issues)
-        aggregated = self.aggregate(df)
-        self.visualize_results(aggregated)
+        df = self.__create_dataframe(issues)
+        aggregated = self.__aggregate(df)
+        self.__visualize_results(aggregated)
 
-    def print_occurrences(self, issues):
+    def __print_occurrences(self, issues):
         # How many self.LABEL instances exist
         total = sum(issue.labels.count(self.LABEL) for issue in issues if issue.labels)
 
         output: str = f"The label '{total}' occurred across {len(issues)} issues"
         print(f'\n\n{output}\n')
 
-    def create_dataframe(self, issues) -> pd.DataFrame:
+    def __create_dataframe(self, issues) -> pd.DataFrame:
         data = []
         for issue in issues:
             num_comments = sum(1 for event in issue.events if event and event.event_type == 'commented')
@@ -43,17 +43,18 @@ class ActiveLabelsAnalysis:
             df = df[df['label'] == self.LABEL]             # filter by label if label arg got passed
         return df
 
-    def aggregate(self, df):
+    def __aggregate(self, df):
         return df.groupby('label')['num_comments'].sum().sort_values(ascending=False)
 
-    def visualize_results(self, label_activity):
-        label_activity.head(10).plot(kind='bar')
+    def __visualize_results(self, label_activity):
+        pick = 10
+        label_activity.head(pick).plot(kind='bar')
         plt.xlabel('Label')
         plt.ylabel('Number of Comments')
         if self.LABEL:
             plt.title(f"Activity on the '{self.LABEL}' label")
         else:
-            plt.title('Top 10 Most Active Labels')
+            plt.title(f'Top {pick} Most Active Labels')
         plt.show()
 
 

@@ -1,12 +1,13 @@
 import sys
 from typing import List
 
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
 
 import config
 from data_loader import DataLoader
-from model import Issue
+from models.Issue import Issue
+
 
 class ReopenedIssueAnalysis:
     """
@@ -18,15 +19,15 @@ class ReopenedIssueAnalysis:
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
-        df = self.create_dataframe(issues)
-        aggregated = self.aggregate(df)
+        df = self.__create_dataframe(issues)
+        aggregated = self.__aggregate(df)
 
         print('Labels associated with the most reopened issues:')
         print(aggregated)
 
-        self.visualize_results(aggregated)
+        self.__visualize_results(aggregated)
 
-    def create_dataframe(self, issues) -> pd.DataFrame:
+    def __create_dataframe(self, issues) -> pd.DataFrame:
         data = []
 
         for issue in issues:
@@ -48,11 +49,11 @@ class ReopenedIssueAnalysis:
 
         return df.explode('labels')
 
-    def aggregate(self, df):
+    def __aggregate(self, df):
         aggregated = df.groupby('labels')['reopen_count'].sum().reset_index()
         return aggregated.sort_values(by='reopen_count', ascending=False)
 
-    def visualize_results(self, aggregated):
+    def __visualize_results(self, aggregated):
         plt.figure(figsize=(12, 6))
         plt.bar(aggregated['labels'], aggregated['reopen_count'])
         plt.xlabel('Label')

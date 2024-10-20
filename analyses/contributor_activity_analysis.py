@@ -5,7 +5,7 @@ import pandas as pd
 
 import config
 from data_loader import DataLoader
-from model import Issue
+from models.Issue import Issue
 
 
 class ContributorActivityAnalysis:
@@ -18,11 +18,11 @@ class ContributorActivityAnalysis:
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
-        df = self.create_dataframe(issues)
-        aggregated = self.aggregate(df)
-        self.visualize_results(df, aggregated)
+        df = self.__create_dataframe(issues)
+        aggregated = self.__aggregate(df)
+        self.__visualize_results(df, aggregated)
 
-    def create_dataframe(self, issues) -> pd.DataFrame:
+    def __create_dataframe(self, issues) -> pd.DataFrame:
         data = []
         for issue in issues:
             for event in issue.events:
@@ -33,12 +33,12 @@ class ContributorActivityAnalysis:
             df = df[df['author'] == self.USER]
         return df
 
-    def aggregate(self, df):
+    def __aggregate(self, df):
         df.set_index('event_date', inplace=True)
         return df.groupby(['author', pd.Grouper(freq='M')]).size().reset_index(name='event_count')
 
 
-    def visualize_results(self, df, aggregated):
+    def __visualize_results(self, df, aggregated):
         top_authors = df['author'].value_counts().head(5).index
         for author in top_authors:
             author_data = aggregated[aggregated['author'] == author]

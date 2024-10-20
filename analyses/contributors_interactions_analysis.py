@@ -6,8 +6,7 @@ import networkx as nx
 
 import config
 from data_loader import DataLoader
-from model import Issue
-from itertools import permutations
+from models.Issue import Issue
 
 
 class ContributorsInteractionsAnalysis:
@@ -22,11 +21,11 @@ class ContributorsInteractionsAnalysis:
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
-        graph = self.create_graph(issues)
-        degree_centrality, top_contributors = self.analyze_network(graph)
-        self.visualize_results(graph, degree_centrality, top_contributors)
+        graph = self.__create_graph(issues)
+        degree_centrality, top_contributors = self.__analyze_network(graph)
+        self.__visualize_results(graph, degree_centrality, top_contributors)
 
-    def analyze_network(self, graph):
+    def __analyze_network(self, graph):
         degree_centrality = nx.degree_centrality(graph)
         top_contributors = sorted(degree_centrality.items(), key=lambda x: x[1], reverse=True)[:30]
 
@@ -36,13 +35,13 @@ class ContributorsInteractionsAnalysis:
 
         return degree_centrality, top_contributors
 
-    def create_graph(self, issues):
+    def __create_graph(self, issues):
         interactions = []
         for issue in issues:
             if self.LABEL and self.LABEL not in issue.labels:
                 continue
 
-            participants = self.get_participants(issue)
+            participants = self.__get_participants(issue)
             if self.USER:
                 if self.USER not in participants:
                     continue
@@ -65,7 +64,7 @@ class ContributorsInteractionsAnalysis:
             sys.exit(1)
         return graph
 
-    def get_participants(self, issue):
+    def __get_participants(self, issue):
         participants = set()
         if issue.creator:
             participants.add(issue.creator)
@@ -74,7 +73,7 @@ class ContributorsInteractionsAnalysis:
                 participants.add(event.author)
         return participants
 
-    def visualize_results(self, graph, degree_centrality, top_contributors):
+    def __visualize_results(self, graph, degree_centrality, top_contributors):
         plt.figure(figsize=(12, 12))
         pos = nx.spring_layout(graph, k=0.15, iterations=20)
 
