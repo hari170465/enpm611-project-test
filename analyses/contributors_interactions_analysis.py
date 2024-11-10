@@ -1,5 +1,5 @@
 import sys
-from typing import List
+from typing import List, Dict
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -7,21 +7,57 @@ import networkx as nx
 import config
 from data_loader import DataLoader
 from models.Issue import Issue
+from analyses.base_feature import BaseFeature
+import argparse
 
 
-class ContributorsInteractionsAnalysis:
+class ContributorsInteractionsAnalysis(BaseFeature):
     """
     1. Analyzes and visualizes the interaction network between contributors based on issue comments and events.
     2. Identifies key contributors, collaboration patterns, and community structure within the project.
     """
 
-    def __init__(self):
-        self.__LABEL: str = config.get_parameter('label')
-        self.__USER: str = config.get_parameter('user')
+    @property
+    def feature_id(self) -> int:
+        return 4
 
-    def run(self):
+    def name(self) -> str:
+        return 'ContributorsInteractionsAnalysis'
+
+    def description(self) -> str:
+        return (
+            'Visualizes the interaction network between contributors based on issue comments and events'
+        )
+
+    def add_arguments(self, parser: argparse.ArgumentParser):
+        parser.add_argument(
+            '--label',
+            type=str,
+            required=False,
+            help='Optional parameter for analyses focusing on a specific label'
+        )
+        parser.add_argument(
+            '--user',
+            type=str,
+            required=False,
+            help='Optional parameter to focus on a specific user'
+        )
+
+    def get_arguments_info(self) -> List[Dict[str, str]]:
+        return [
+            {
+                'flags': '--label',
+                'help': 'Optional parameter for analyses focusing on a specific label'
+            },
+            {
+                'flags': '--user',
+                'help': 'Optional parameter to focus on a specific user'
+            }
+        ]
+
+    def run(self, args):
         issues: List[Issue] = DataLoader().get_issues()
-        graph = self.__create_graph(issues)
+        graph = self.__create_graph(issues, args.label, args.user)
         degree_centrality, top_contributors = self.__analyze_network(graph)
         self.__visualize_results(graph, degree_centrality, top_contributors)
 
@@ -35,15 +71,15 @@ class ContributorsInteractionsAnalysis:
 
         return degree_centrality, top_contributors
 
-    def __create_graph(self, issues):
+    def __create_graph(self, issues, label_filter, user_filter):
         interactions = []
         for issue in issues:
-            if self.__LABEL and self.__LABEL not in issue.labels:
+            if label_filter and label_filter not in issue.labels:
                 continue
 
             participants = self.__get_participants(issue)
-            if self.__USER:
-                if self.__USER not in participants:
+            if user_filter:
+                if user_filter not in participants:
                     continue
 
             # Create pairs of participants
@@ -90,7 +126,6 @@ class ContributorsInteractionsAnalysis:
         plt.axis('off')
         plt.tight_layout()
         plt.show()
-
 
 
 if __name__ == '__main__':

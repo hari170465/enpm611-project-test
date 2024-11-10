@@ -1,5 +1,5 @@
 ## About Project
-This is my submission for ENPM611 project.
+This is Team 12's submission for the ENPM611 project.
 
 This code implements four different analyses to analyze GitHub issues from the `python-poetry/poetry` repository to generate insights into **issue activity**, **contributor engagement**, **issue reopening patterns**, and **contributor interactions**.
 
@@ -55,22 +55,64 @@ Optional filters for user and label can be provided using the `--user` and `--la
 python run.py --feature <feature_number> [--user <username>] [--label <label_name>]
 ```  
 
+
 #### Examples
 
 1. **Run Analysis 1 (Most Active Issue Labels)**
 ```bash  
 python run.py --feature 1 --label Bug
 ```  
-1. **Run Analysis 2 (Contributor Activity Over Time)**
-
+2. **Run Analysis 2 (Contributor Activity Over Time)**
 ```bash  
 python run.py --feature 2 --user rth
 ```  
-1. **Run Analysis 3 (Counting Reopened Issues per Label)**
+3. **Run Analysis 3 (Counting Reopened Issues per Label)**
 ```bash  
 python run.py --feature 3
 ```  
-1. **Run Analysis 4 (Network Analysis of Contributor Interactions)**
+4. **Run Analysis 4 (Network Analysis of Contributor Interactions)**
 ```bash  
-python run.py -f 4 --label Bug --user cmarmo  
+python run.py -f 4 --label Bug --user cmarmo 
 ```
+
+### Software Engineering Techniques
+
+To enhance the modularity, maintainability, and scalability of the codebase, several software engineering techniques were employed.
+
+#### Base Class and Automatic Feature Discovery
+
+- **Base Class (`BaseFeature`)** 
+    - An abstract base class was created to define a common interface for all analysis features. 
+    - This ensures consistency across different analyses and enforces the implementation of essential methods such as `run`, `add_arguments`, and `get_arguments_info`.
+  
+- **Automatic Feature Discovery:**
+    - The application dynamically discovers and registers all available features by scanning the `analyses` package. 
+    - This eliminates the need to manually register each new feature.
+    - This follows the Open-Closed Principle.
+        - New features can be added without modifying the core application logic.
+        - Centralizes feature management
+  
+    - **How It Works:**
+        - Upon initialization, the application imports all modules within the `analyses` directory.
+        - It identifies classes that inherit from `BaseFeature` and registers them based on their unique `feature_id`.
+
+#### Command-Line Interface Enhancements
+
+- **Subparsers for Feature-Specific Arguments**
+    - Each feature can define its own set of arguments.
+    - Users can easily understand which arguments are applicable to each feature.
+    - Supports complex argument structures without cluttering the global namespace.
+
+    - **Example Output:**
+        ```
+        Available Features:
+            1: ActiveLabelsAnalysis: Identifies labels associated with the most active discussions.
+                --active-labels           Number of top active labels to analyze (default: 10)
+                --label                   Optional parameter for analyses focusing on a specific label
+
+            2: ContributorActivityAnalysis: Analyzes contributor activity (comments, events) over time.
+                --user                    Optional parameter to focus on a specific user
+        ```
+
+#### **Modular Code Structure**
+I re-organized the project into distinct modules and packages, separating concerns and facilitating easier navigation and maintenance.
