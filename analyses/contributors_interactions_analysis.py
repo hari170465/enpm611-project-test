@@ -1,21 +1,33 @@
+import argparse
 import sys
 from typing import List, Dict
 
 import matplotlib.pyplot as plt
 import networkx as nx
 
-import config
+from analyses.base_analysis import BaseAnalysis
 from data_loader import DataLoader
 from models.Issue import Issue
-from analyses.base_feature import BaseFeature
-import argparse
+from util.builders import ArgInfoBuilder
 
 
-class ContributorsInteractionsAnalysis(BaseFeature):
+class ContributorsInteractionsAnalysis(BaseAnalysis):
     """
     1. Analyzes and visualizes the interaction network between contributors based on issue comments and events.
     2. Identifies key contributors, collaboration patterns, and community structure within the project.
     """
+    
+    def __init__(self):
+        self.label_arg = (ArgInfoBuilder()
+            .set_flags('--label')
+            .set_help('(Optional) focus analysis on a specific label')
+            .build()
+        )
+        self.user_arg = (ArgInfoBuilder()
+            .set_flags('--user')
+            .set_help('(Optional) focus analysis on a specific user')
+            .build()
+        )
 
     @property
     def feature_id(self) -> int:
@@ -31,29 +43,20 @@ class ContributorsInteractionsAnalysis(BaseFeature):
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         parser.add_argument(
-            '--label',
+            self.label_arg.flags,
             type=str,
             required=False,
-            help='Optional parameter for analyses focusing on a specific label'
+            help=self.label_arg.help
         )
         parser.add_argument(
-            '--user',
+            self.user_arg.flags,
             type=str,
             required=False,
-            help='Optional parameter to focus on a specific user'
+            help=self.user_arg.help
         )
 
     def get_arguments_info(self) -> List[Dict[str, str]]:
-        return [
-            {
-                'flags': '--label',
-                'help': 'Optional parameter for analyses focusing on a specific label'
-            },
-            {
-                'flags': '--user',
-                'help': 'Optional parameter to focus on a specific user'
-            }
-        ]
+        return [self.label_arg, self.user_arg]
 
     def run(self, args):
         issues: List[Issue] = DataLoader().get_issues()
@@ -126,7 +129,3 @@ class ContributorsInteractionsAnalysis(BaseFeature):
         plt.axis('off')
         plt.tight_layout()
         plt.show()
-
-
-if __name__ == '__main__':
-    ContributorsInteractionsAnalysis().run()

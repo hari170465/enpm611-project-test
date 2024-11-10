@@ -1,20 +1,27 @@
+import argparse
 import sys
 from typing import List, Dict
 
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import config
+from analyses.base_analysis import BaseAnalysis
 from data_loader import DataLoader
 from models.Issue import Issue
-from analyses.base_feature import BaseFeature
-import argparse
+from util.builders import ArgInfoBuilder
 
 
-class ReopenedIssueAnalysis(BaseFeature):
+class ReopenedIssueAnalysis(BaseAnalysis):
     """
     Identifies which issue labels are associated with issues being reopened the most.
     """
+
+    def __init__(self):
+        self.labels_arg = (ArgInfoBuilder()
+            .set_flags('--labels')
+            .set_help('(Optional) The number of labels to show in the result')
+            .build()
+        )
 
     @property
     def feature_id(self) -> int:
@@ -28,38 +35,30 @@ class ReopenedIssueAnalysis(BaseFeature):
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         parser.add_argument(
-            '--label',
-            type=str,
+            self.labels_arg.flags,
+            type=int,
+            default=10,
             required=False,
-            help='Optional parameter for analyses focusing on a specific label'
+            help=self.labels_arg.help
         )
 
     def get_arguments_info(self) -> List[Dict[str, str]]:
-        return [
-            {
-                'flags': '--label',
-                'help': 'Optional parameter for analyses focusing on a specific label'
-            }
-        ]
+        return [self.labels_arg]
 
     def run(self, args):
         issues: List[Issue] = DataLoader().get_issues()
-        df = self.__create_dataframe(issues, args.label)
-        aggregated = self.__aggregate(df)
+        df = self.__create_dataframe(issues)
+        aggregated = self.__aggregate(df, args.labels)
 
         print('Labels associated with the most reopened issues:')
         print(aggregated)
 
         self.__visualize_results(aggregated)
 
-    def __create_dataframe(self, issues, label_filter) -> pd.DataFrame:
+    def __create_dataframe(self, issues) -> pd.DataFrame:
         data = []
 
         for issue in issues:
-            # Filter by label if label_filter is provided
-            if label_filter and label_filter not in issue.labels:
-                continue
-
             reopen_count = sum(1 for event in issue.events if event and event.event_type == 'reopened')
             if reopen_count > 0:
                 data.append({
@@ -74,9 +73,9 @@ class ReopenedIssueAnalysis(BaseFeature):
 
         return df.explode('labels')
 
-    def __aggregate(self, df):
+    def __aggregate(self, df, number_of_labels: int):
         aggregated = df.groupby('labels')['reopen_count'].sum().reset_index()
-        return aggregated.sort_values(by='reopen_count', ascending=False)
+        return aggregated.sort_values(by='reopen_count', ascending=False).head(number_of_labels)
 
     def __visualize_results(self, aggregated):
         plt.figure(figsize=(12, 6))
@@ -87,7 +86,3 @@ class ReopenedIssueAnalysis(BaseFeature):
         plt.xticks(rotation=45)
         plt.tight_layout()
         plt.show()
-
-
-if __name__ == '__main__':
-    ReopenedIssueAnalysis().run()

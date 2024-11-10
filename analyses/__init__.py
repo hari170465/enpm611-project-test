@@ -1,9 +1,10 @@
-import pkgutil
 import importlib
+import pkgutil
 from typing import Dict
-from .base_feature import BaseFeature
 
-FEATURES: Dict[int, BaseFeature] = {}
+from .base_analysis import BaseAnalysis
+
+FEATURES: Dict[int, BaseAnalysis] = {}
 
 def discover_features():
     """
@@ -19,13 +20,13 @@ def discover_features():
         
         module = importlib.import_module(f"{__name__}.{module_name}")
         
-        # Iterate through attributes to find classes inheriting from BaseFeature
+        # Iterate through attributes to find classes inheriting from BaseAnalysis
         for attribute_name in dir(module):
             attribute = getattr(module, attribute_name)
             if (
                 isinstance(attribute, type) 
-                and issubclass(attribute, BaseFeature) 
-                and attribute is not BaseFeature
+                and issubclass(attribute, BaseAnalysis) 
+                and attribute is not BaseAnalysis
             ):
                 feature_instance = attribute()
                 if feature_instance.feature_id in FEATURES:

@@ -1,8 +1,11 @@
 import abc
 import argparse
-from typing import List, Dict
+from typing import List
 
-class BaseFeature(abc.ABC):
+from util.builders import ArgInfo
+
+
+class BaseAnalysis(abc.ABC):
     """
     Abstract base class for all analysis features.
     """
@@ -37,18 +40,10 @@ class BaseFeature(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_arguments_info(self) -> List[Dict[str, str]]:
+    def get_arguments_info(self) -> List[ArgInfo]:
         """
-        Returns a list of dictionaries containing information about each argument.
-        Each dictionary should have 'flags' and 'help' keys.
-        Example:
-            [
-                {
-                    'flags': '--active-labels, -a',
-                    'help': 'Number of top active labels to analyze (default: 10)'
-                },
-                ...
-            ]
+        Returns a list of ArgInfo objects containing information about each argument.
+        Each ArgInfo should define the 'flags' and 'help' keys.
         """
         pass
 

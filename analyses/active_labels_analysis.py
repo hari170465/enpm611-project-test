@@ -1,20 +1,31 @@
-from typing import List, Dict
+import argparse
+from typing import List
 
 import matplotlib.pyplot as plt
 import pandas as pd
-import argparse
 
-import config
-from analyses.base_feature import BaseFeature
+from analyses.base_analysis import BaseAnalysis
 from data_loader import DataLoader
 from models.Issue import Issue
+from util.builders import ArgInfo, ArgInfoBuilder
 
 
-
-class ActiveLabelsAnalysis(BaseFeature):
+class ActiveLabelsAnalysis(BaseAnalysis):
     """
      Identifies labels associated with the most active discussions.
     """
+
+    def __init__(self):
+        self.active_labels_arg = (ArgInfoBuilder()
+            .set_flags('--active-labels')
+            .set_help('(Optional) The number of top active labels to analyze')
+            .build()
+        )
+        self.label_arg = (ArgInfoBuilder()
+            .set_flags('--label')
+            .set_help('(Optional) focus analysis on a specific label')
+            .build()
+        )
 
     @property
     def feature_id(self) -> int:
@@ -28,28 +39,20 @@ class ActiveLabelsAnalysis(BaseFeature):
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         parser.add_argument(
-            '--active-labels', '-a',
+            self.active_labels_arg.flags,
             type=int,
             default=10,
-            help='Number of top active labels to analyze (default: 10)'
+            required=False,
+            help=self.active_labels_arg.help
         )
         parser.add_argument(
-            '--label',
+            self.label_arg.flags,
             type=str,
-            help='Optional parameter for analyses focusing on a specific label'
+            help=self.label_arg.help
         )
 
-    def get_arguments_info(self) -> List[Dict[str, str]]:
-        return [
-            {
-                'flags': '--active-labels',
-                'help': 'Number of top active labels to analyze (default: 10)'
-            },
-            {
-                'flags': '--label',
-                'help': 'Optional parameter for analyses focusing on a specific label'
-            }
-        ]
+    def get_arguments_info(self) -> List[ArgInfo]:
+        return [self.active_labels_arg, self.label_arg]
 
     def run(self, args):
         issues: List[Issue] = DataLoader().get_issues()
@@ -91,7 +94,3 @@ class ActiveLabelsAnalysis(BaseFeature):
             plt.title(f'Top {top_n} Most Active Labels')
         plt.tight_layout()
         plt.show()
-
-
-if __name__ == '__main__':
-    ActiveLabelsAnalysis().run()

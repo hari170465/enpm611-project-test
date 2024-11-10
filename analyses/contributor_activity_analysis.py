@@ -1,18 +1,25 @@
+import argparse
 from typing import List, Dict
+
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import config
+from analyses.base_analysis import BaseAnalysis
 from data_loader import DataLoader
 from models.Issue import Issue
-from analyses.base_feature import BaseFeature
-import argparse
+from util.builders import ArgInfoBuilder
 
 
-class ContributorActivityAnalysis(BaseFeature):
+class ContributorActivityAnalysis(BaseAnalysis):
     """
     Analyzes contributor activity (comments, events) over time.
     """
+    def __init__(self):
+        self.user_arg = (ArgInfoBuilder()
+            .set_flags('--user')
+            .set_help('(Optional) focus analysis on a specific user')
+            .build()
+        )
 
     @property
     def feature_id(self) -> int:
@@ -26,19 +33,14 @@ class ContributorActivityAnalysis(BaseFeature):
 
     def add_arguments(self, parser: argparse.ArgumentParser):
         parser.add_argument(
-            '--user',
+            self.user_arg.flags,
             type=str,
             required=False,
-            help='Optional parameter to focus on a specific user'
+            help=self.user_arg.help
         )
 
     def get_arguments_info(self) -> List[Dict[str, str]]:
-        return [
-            {
-                'flags': '--user',
-                'help': 'Optional parameter to focus on a specific user'
-            }
-        ]
+        return [self.user_arg]
 
     def run(self, args):
         issues: List[Issue] = DataLoader().get_issues()
@@ -73,7 +75,3 @@ class ContributorActivityAnalysis(BaseFeature):
         plt.title('Contributor Activity Over Time (Smoothed)')
         plt.legend()
         plt.show()
-
-
-if __name__ == '__main__':
-    ContributorActivityAnalysis().run()
