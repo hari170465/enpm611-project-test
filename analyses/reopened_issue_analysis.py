@@ -1,5 +1,5 @@
 import sys
-from typing import List
+from typing import List, Dict
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -7,19 +7,44 @@ import pandas as pd
 import config
 from data_loader import DataLoader
 from models.Issue import Issue
+from analyses.base_feature import BaseFeature
+import argparse
 
 
-class ReopenedIssueAnalysis:
+class ReopenedIssueAnalysis(BaseFeature):
     """
     Identifies which issue labels are associated with issues being reopened the most.
     """
 
-    def __init__(self):
-        self.__LABEL: str = config.get_parameter('label')
+    @property
+    def feature_id(self) -> int:
+        return 3
 
-    def run(self):
+    def name(self) -> str:
+        return 'ReopenedIssueAnalysis'
+
+    def description(self) -> str:
+        return 'Identifies which issue labels are associated with issues being reopened the most.'
+
+    def add_arguments(self, parser: argparse.ArgumentParser):
+        parser.add_argument(
+            '--label',
+            type=str,
+            required=False,
+            help='Optional parameter for analyses focusing on a specific label'
+        )
+
+    def get_arguments_info(self) -> List[Dict[str, str]]:
+        return [
+            {
+                'flags': '--label',
+                'help': 'Optional parameter for analyses focusing on a specific label'
+            }
+        ]
+
+    def run(self, args):
         issues: List[Issue] = DataLoader().get_issues()
-        df = self.__create_dataframe(issues)
+        df = self.__create_dataframe(issues, args.label)
         aggregated = self.__aggregate(df)
 
         print('Labels associated with the most reopened issues:')
@@ -27,12 +52,12 @@ class ReopenedIssueAnalysis:
 
         self.__visualize_results(aggregated)
 
-    def __create_dataframe(self, issues) -> pd.DataFrame:
+    def __create_dataframe(self, issues, label_filter) -> pd.DataFrame:
         data = []
 
         for issue in issues:
-            # Filter by label if self.__LABEL is provided
-            if self.__LABEL and self.__LABEL not in issue.labels:
+            # Filter by label if label_filter is provided
+            if label_filter and label_filter not in issue.labels:
                 continue
 
             reopen_count = sum(1 for event in issue.events if event and event.event_type == 'reopened')
