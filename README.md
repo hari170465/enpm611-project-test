@@ -28,7 +28,7 @@ This analysis shows collaboration patterns and key contributors. And still has s
 
 To enhance the modularity, maintainability, and scalability of the codebase, several software engineering techniques were employed.
 
-#### Base Class and Automatic Feature Discovery
+### Base Class and Automatic Feature Discovery
 
 - **Base Class (`BaseAnalysis`)**
     - An abstract base class was created to define a common interface for all analysis features.
@@ -45,7 +45,7 @@ To enhance the modularity, maintainability, and scalability of the codebase, sev
         - Upon initialization, the application imports all modules within the `analyses` directory.
         - It identifies classes that inherit from `BaseAnalysis` and registers them based on their unique `feature_id`.
 
-#### Command-Line Interface Enhancements
+### Command-Line Interface Enhancements
 
 - **Subparsers for Feature-Specific Arguments**
     - Each feature can define its own set of arguments.
@@ -63,17 +63,17 @@ To enhance the modularity, maintainability, and scalability of the codebase, sev
                 --user                    Optional parameter to focus on a specific user
         ```
 
-#### **Modular Code Structure**
+### **Modular Code Structure**
 I re-organized the project into distinct modules and packages, separating concerns and facilitating easier navigation and maintenance.
 
 ### Builder Design Pattern
-Using the builder pattern to create the arginfo object enhances code readability and maintainability.
-It provides a clear approach to construct the object.
-It ensures all required properties are initialized by the user.
-It reduces the risk of inconsistent states.
-It allows easy modifications or extensions without altering the core logic.
-It abstracts the construction details, leading to cleaner and more organized code.
-It simplifies testing and debugging, as each step of the object creation is isolated and manageable.
+- Using the builder pattern to create the ArgInfo object enhances code readability and maintainability.
+- It provides a clear approach to construct the object.
+- It ensures all required properties are initialized by the user.
+- It reduces the risk of inconsistent states.
+- It allows easy modifications or extensions without altering the core logic.
+- It abstracts the construction details, leading to cleaner and more organized code.
+- It simplifies testing and debugging, as each step of the object creation is isolated and manageable.
 
 ## How to Run the Program
 
