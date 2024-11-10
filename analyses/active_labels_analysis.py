@@ -14,11 +14,11 @@ class ActiveLabelsAnalysis:
     """
 
     def __init__(self):
-        self.LABEL: str = config.get_parameter('label')
+        self.__LABEL: str = config.get_parameter('label')
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
-        if self.LABEL:
+        if self.__LABEL:
             self.__print_occurrences(issues)
 
         df = self.__create_dataframe(issues)
@@ -26,8 +26,8 @@ class ActiveLabelsAnalysis:
         self.__visualize_results(aggregated)
 
     def __print_occurrences(self, issues):
-        # How many self.LABEL instances exist
-        total = sum(issue.labels.count(self.LABEL) for issue in issues if issue.labels)
+        # How many self.__LABEL instances exist
+        total = sum(issue.labels.count(self.__LABEL) for issue in issues if issue.labels)
 
         output: str = f"The label '{total}' occurred across {len(issues)} issues"
         print(f'\n\n{output}\n')
@@ -39,8 +39,8 @@ class ActiveLabelsAnalysis:
             for label in issue.labels:
                 data.append({'label': label, 'num_comments': num_comments})
         df = pd.DataFrame(data)
-        if self.LABEL:
-            df = df[df['label'] == self.LABEL]             # filter by label if label arg got passed
+        if self.__LABEL:
+            df = df[df['label'] == self.__LABEL]             # filter by label if label arg got passed
         return df
 
     def __aggregate(self, df):
@@ -51,8 +51,8 @@ class ActiveLabelsAnalysis:
         label_activity.head(pick).plot(kind='bar')
         plt.xlabel('Label')
         plt.ylabel('Number of Comments')
-        if self.LABEL:
-            plt.title(f"Activity on the '{self.LABEL}' label")
+        if self.__LABEL:
+            plt.title(f"Activity on the '{self.__LABEL}' label")
         else:
             plt.title(f'Top {pick} Most Active Labels')
         plt.show()

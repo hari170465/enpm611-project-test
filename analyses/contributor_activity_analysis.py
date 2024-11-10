@@ -14,7 +14,7 @@ class ContributorActivityAnalysis:
     """
 
     def __init__(self):
-        self.USER: str = config.get_parameter('user')
+        self.__USER: str = config.get_parameter('user')
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
@@ -29,8 +29,8 @@ class ContributorActivityAnalysis:
                 data.append({'author': event.author, 'event_date': event.event_date})
         df = pd.DataFrame(data)
         df['event_date'] = pd.to_datetime(df['event_date'])
-        if self.USER:
-            df = df[df['author'] == self.USER]
+        if self.__USER:
+            df = df[df['author'] == self.__USER]
         return df
 
     def __aggregate(self, df):

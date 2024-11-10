@@ -16,8 +16,8 @@ class ContributorsInteractionsAnalysis:
     """
 
     def __init__(self):
-        self.LABEL: str = config.get_parameter('label')
-        self.USER: str = config.get_parameter('user')
+        self.__LABEL: str = config.get_parameter('label')
+        self.__USER: str = config.get_parameter('user')
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
@@ -38,12 +38,12 @@ class ContributorsInteractionsAnalysis:
     def __create_graph(self, issues):
         interactions = []
         for issue in issues:
-            if self.LABEL and self.LABEL not in issue.labels:
+            if self.__LABEL and self.__LABEL not in issue.labels:
                 continue
 
             participants = self.__get_participants(issue)
-            if self.USER:
-                if self.USER not in participants:
+            if self.__USER:
+                if self.__USER not in participants:
                     continue
 
             # Create pairs of participants

@@ -10,7 +10,7 @@ from analyses.contributors_interactions_analysis import ContributorsInteractions
 from analyses.reopened_issue_analysis import ReopenedIssueAnalysis
 
 
-def parse_args():
+def __parse_args():
     """
     Parses the command line arguments that were provided along
     with the python command.
@@ -28,7 +28,7 @@ def parse_args():
     
     return ap.parse_args()
 
-def unrecognized_feature():
+def __unrecognized_feature():
     print(f'Error: Need to pick a feature between 1 and {len(FEATURES)}')
     sys.exit(1)
 
@@ -43,6 +43,6 @@ FEATURES = {
 
 
 if __name__ == "__main__":
-    args = parse_args()
+    args = __parse_args()
     config.overwrite_from_args(args)
-    FEATURES.get(args.feature, unrecognized_feature)()
+    FEATURES.get(args.feature, __unrecognized_feature)()

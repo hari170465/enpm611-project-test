@@ -15,7 +15,7 @@ class ReopenedIssueAnalysis:
     """
 
     def __init__(self):
-        self.LABEL: str = config.get_parameter('label')
+        self.__LABEL: str = config.get_parameter('label')
 
     def run(self):
         issues: List[Issue] = DataLoader().get_issues()
@@ -31,8 +31,8 @@ class ReopenedIssueAnalysis:
         data = []
 
         for issue in issues:
-            # Filter by label if self.LABEL is provided
-            if self.LABEL and self.LABEL not in issue.labels:
+            # Filter by label if self.__LABEL is provided
+            if self.__LABEL and self.__LABEL not in issue.labels:
                 continue
 
             reopen_count = sum(1 for event in issue.events if event and event.event_type == 'reopened')
