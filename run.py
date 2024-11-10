@@ -3,8 +3,10 @@
 
 import argparse
 import sys
+
 import analyses
 import config
+
 
 def __parse_args():
     """
@@ -39,7 +41,7 @@ def __parse_args():
             print(f"  {fid}: {feature.name()}: {feature.description()}")
             arguments_info = feature.get_arguments_info()
             for arg in arguments_info:
-                print(f"\t{arg['flags']:<25} {arg['help']}")
+                print(f"\t{arg.flags:<25} {arg.help}")
             print()
         sys.exit(0)
     
