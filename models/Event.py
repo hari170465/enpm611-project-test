@@ -20,7 +20,7 @@ class Event:
         self.author = jobj.get('author')
         try:
             self.event_date = parser.parse(jobj.get('event_date'))
-        except:
+        except: 
             pass
         self.label = jobj.get('label')
         self.comment = jobj.get('comment')

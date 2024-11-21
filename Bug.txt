@@ -1,0 +1,2 @@
+1. In data_loader there was no error handling for loading a file. 
+2. There is an iteritem method which is only compatible with python2, though this is inside the try except block. I believe it should be removed. 

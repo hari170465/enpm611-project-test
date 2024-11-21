@@ -1,0 +1,30 @@
+[run]
+omit =
+    # Exclude test files
+    tests/*
+    # Exclude __init__.py files
+    */__init__.py
+    # Exclude the main application entry point
+    run.py
+    # Exclude the State.py file (enum class)
+    models/State.py
+    # Excluding builder.file
+    util/builders.py
+
+[report]
+# Exclude specific lines from coverage analysis
+exclude_lines =
+    # Lines with this pragma are not counted
+    pragma: no cover
+
+    # Don't report coverage for pass statements
+    pass
+
+    # Don't report coverage for 'if __name__ == "__main__":' blocks
+    if __name__ == .__main__.:
+
+    # Exclude simple property methods
+    @property
+
+    # Exclude trivial methods
+    def (name|description|feature_id|__visualize_results|_get_default_path)
