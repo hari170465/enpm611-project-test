@@ -97,7 +97,6 @@ class ContributorsInteractionsAnalysis(BaseAnalysis):
                 graph[c1][c2]['weight'] += 1
             else:
                 graph.add_edge(c1, c2, weight=1)
-
         if graph.number_of_nodes() == 0:
             print("No interactions found for the specified filters.")
             sys.exit(1)
