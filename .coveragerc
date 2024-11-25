@@ -4,12 +4,15 @@ omit =
     tests/*
     # Exclude __init__.py files
     */__init__.py
-    # # Exclude the main application entry point
-    # run.py
     # Exclude the State.py file (enum class)
     models/State.py
     # Excluding builder.file
     util/builders.py
+    # Excluding contributors_interactions_analysis.py file 
+    analyses/contributors_interactions_analysis.py
+    # Excluding data_loader.py
+    data_loader.py
+
 
 [report]
 # Exclude specific lines from coverage analysis
