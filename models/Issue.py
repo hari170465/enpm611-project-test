@@ -40,11 +40,11 @@ class Issue:
             pass
         try:
             self.created_date = parser.parse(jobj.get('created_date'))
-        except:
+        except: 
             pass
         try:
             self.updated_date = parser.parse(jobj.get('updated_date'))
-        except:
+        except: 
             pass
         self.timeline_url = jobj.get('timeline_url')
         self.events = [Event(jevent) for jevent in jobj.get('events',[])]
