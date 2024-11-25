@@ -4,8 +4,8 @@ omit =
     tests/*
     # Exclude __init__.py files
     */__init__.py
-    # Exclude the main application entry point
-    run.py
+    # # Exclude the main application entry point
+    # run.py
     # Exclude the State.py file (enum class)
     models/State.py
     # Excluding builder.file
